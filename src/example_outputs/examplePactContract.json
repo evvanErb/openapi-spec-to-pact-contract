@@ -24,25 +24,25 @@
         },
         "body": [
           {
-            "userUUID": "e72760a3-09a6-4c5d-ab60-993023a841c4",
-            "userName": "RauNbKbywY",
-            "issuer": "vV50VCkpx2",
-            "claimName": "ggSR12GCPz",
-            "claimValue": "hIPxzMKKxb"
+            "userUUID": "321ab8a2-0405-4cda-9fdc-7a3ef614e671",
+            "userName": "91pRAUIIZw",
+            "issuer": "l49iGoBUCJ",
+            "claimName": "xVW1alVtzI",
+            "claimValue": "ZQZOeUeBov"
           },
           {
-            "userUUID": "1df286d5-274e-4849-b9e6-8a3c45cb6eb7",
-            "userName": "6mQa6knQoN",
-            "issuer": "lYf5dJtBwg",
-            "claimName": "lubeMHxAB3",
-            "claimValue": "IZnr0WHeio"
+            "userUUID": "34ebfc22-2759-4c4c-bb88-fefab1fa8227",
+            "userName": "W1CpTnCs5t",
+            "issuer": "EjpKdWR24P",
+            "claimName": "hsgt10LvyT",
+            "claimValue": "T3DvBcaBwN"
           },
           {
-            "userUUID": "7440adad-70fb-4641-9c98-0fe69e9fd42c",
-            "userName": "bSNTvWImeh",
-            "issuer": "lMyDY4e1sZ",
-            "claimName": "Pf1Ogdt8ES",
-            "claimValue": "MJcPOSxwOG"
+            "userUUID": "6dc311e0-5ea8-46c5-b67a-3168d80d32ad",
+            "userName": "TinS4xPPpq",
+            "issuer": "3quLUx1H9x",
+            "claimName": "TEOTwZxb1Y",
+            "claimValue": "KWKEJ47HRN"
           }
         ]
       }
@@ -61,11 +61,11 @@
           "Content-Type": "application/json"
         },
         "body": {
-          "userUUID": "e72760a3-09a6-4c5d-ab60-993023a841c4",
-          "userName": "RauNbKbywY",
-          "issuer": "vV50VCkpx2",
-          "claimName": "ggSR12GCPz",
-          "claimValue": "hIPxzMKKxb"
+          "userUUID": "321ab8a2-0405-4cda-9fdc-7a3ef614e671",
+          "userName": "91pRAUIIZw",
+          "issuer": "l49iGoBUCJ",
+          "claimName": "xVW1alVtzI",
+          "claimValue": "ZQZOeUeBov"
         }
       },
       "response": {
@@ -86,11 +86,11 @@
           "Content-Type": "application/json"
         },
         "body": {
-          "userUUID": "e72760a3-09a6-4c5d-ab60-993023a841c4",
-          "userName": "RauNbKbywY",
-          "issuer": "vV50VCkpx2",
-          "claimName": "ggSR12GCPz",
-          "claimValue": "hIPxzMKKxb"
+          "userUUID": "321ab8a2-0405-4cda-9fdc-7a3ef614e671",
+          "userName": "91pRAUIIZw",
+          "issuer": "l49iGoBUCJ",
+          "claimName": "xVW1alVtzI",
+          "claimValue": "ZQZOeUeBov"
         }
       },
       "response": {
@@ -115,33 +115,33 @@
         },
         "body": [
           {
-            "valueOne": "hFs6ewHCHM",
-            "valueTwo": -0.73,
-            "valueThree": 84,
+            "valueOne": "SIrCHqA6Cy",
+            "valueTwo": -68.24,
+            "valueThree": 57,
             "valueFour": true,
             "valueFive": {
-              "subValueOne": "B2ojWg8QZe",
-              "subValueTwo": 92
+              "subValueOne": "243TRqr5vR",
+              "subValueTwo": 17
             }
           },
           {
-            "valueOne": "agEWxVYWOt",
-            "valueTwo": -18.63,
-            "valueThree": 26,
+            "valueOne": "LPognyZPmS",
+            "valueTwo": -62.11,
+            "valueThree": 27,
             "valueFour": true,
             "valueFive": {
-              "subValueOne": "LLVFbV5avV",
-              "subValueTwo": 59
+              "subValueOne": "WxUSUA2Qhb",
+              "subValueTwo": 22
             }
           },
           {
-            "valueOne": "UIKd8AOkYJ",
-            "valueTwo": -88.36,
-            "valueThree": 39,
+            "valueOne": "bV1HkYZKPK",
+            "valueTwo": -17.08,
+            "valueThree": 17,
             "valueFour": true,
             "valueFive": {
-              "subValueOne": "Ta5ISs3xPx",
-              "subValueTwo": 73
+              "subValueOne": "LhzXGbKGWT",
+              "subValueTwo": 60
             }
           }
         ]
@@ -161,13 +161,13 @@
           "Content-Type": "application/json"
         },
         "body": {
-          "valueOne": "hFs6ewHCHM",
-          "valueTwo": -0.73,
-          "valueThree": 84,
+          "valueOne": "SIrCHqA6Cy",
+          "valueTwo": -68.24,
+          "valueThree": 57,
           "valueFour": true,
           "valueFive": {
-            "subValueOne": "B2ojWg8QZe",
-            "subValueTwo": 92
+            "subValueOne": "243TRqr5vR",
+            "subValueTwo": 17
           }
         }
       },
@@ -189,13 +189,13 @@
           "Content-Type": "application/json"
         },
         "body": {
-          "valueOne": "hFs6ewHCHM",
-          "valueTwo": -0.73,
-          "valueThree": 84,
+          "valueOne": "SIrCHqA6Cy",
+          "valueTwo": -68.24,
+          "valueThree": 57,
           "valueFour": true,
           "valueFive": {
-            "subValueOne": "B2ojWg8QZe",
-            "subValueTwo": 92
+            "subValueOne": "243TRqr5vR",
+            "subValueTwo": 17
           }
         }
       },
@@ -218,7 +218,8 @@
         "status": 200,
         "headers": {
           "Content-Type": "application/json"
-        }
+        },
+        "body": "MxbddldX18"
       }
     },
     {
@@ -233,7 +234,8 @@
         "path": "/important-things",
         "headers": {
           "Content-Type": "application/json"
-        }
+        },
+        "body": -85.27
       },
       "response": {
         "status": 200
@@ -251,7 +253,8 @@
         "path": "/important-things",
         "headers": {
           "Content-Type": "application/json"
-        }
+        },
+        "body": -29.59
       },
       "response": {
         "status": 200,
@@ -261,11 +264,11 @@
         "body": {
           "id": 100,
           "myObject": {
-            "userUUID": "e72760a3-09a6-4c5d-ab60-993023a841c4",
-            "userName": "RauNbKbywY",
-            "issuer": "vV50VCkpx2",
-            "claimName": "ggSR12GCPz",
-            "claimValue": "hIPxzMKKxb"
+            "userUUID": "321ab8a2-0405-4cda-9fdc-7a3ef614e671",
+            "userName": "91pRAUIIZw",
+            "issuer": "l49iGoBUCJ",
+            "claimName": "xVW1alVtzI",
+            "claimValue": "ZQZOeUeBov"
           }
         }
       }
