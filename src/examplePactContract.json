@@ -1,0 +1,279 @@
+{
+  "consumer": {
+    "name": "ExampleOpenAPISpecConsumer"
+  },
+  "provider": {
+    "name": "ExampleOpenAPISpecProvider"
+  },
+  "interactions": [
+    {
+      "description": "/my-mappings get",
+      "providerStates": [
+        {
+          "name": "/my-mappings get"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/my-mappings"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+          {
+            "userUUID": "e72760a3-09a6-4c5d-ab60-993023a841c4",
+            "userName": "RauNbKbywY",
+            "issuer": "vV50VCkpx2",
+            "claimName": "ggSR12GCPz",
+            "claimValue": "hIPxzMKKxb"
+          },
+          {
+            "userUUID": "1df286d5-274e-4849-b9e6-8a3c45cb6eb7",
+            "userName": "6mQa6knQoN",
+            "issuer": "lYf5dJtBwg",
+            "claimName": "lubeMHxAB3",
+            "claimValue": "IZnr0WHeio"
+          },
+          {
+            "userUUID": "7440adad-70fb-4641-9c98-0fe69e9fd42c",
+            "userName": "bSNTvWImeh",
+            "issuer": "lMyDY4e1sZ",
+            "claimName": "Pf1Ogdt8ES",
+            "claimValue": "MJcPOSxwOG"
+          }
+        ]
+      }
+    },
+    {
+      "description": "/my-mappings post",
+      "providerStates": [
+        {
+          "name": "/my-mappings post"
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "path": "/my-mappings",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "userUUID": "e72760a3-09a6-4c5d-ab60-993023a841c4",
+          "userName": "RauNbKbywY",
+          "issuer": "vV50VCkpx2",
+          "claimName": "ggSR12GCPz",
+          "claimValue": "hIPxzMKKxb"
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "/my-mappings delete",
+      "providerStates": [
+        {
+          "name": "/my-mappings delete"
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "path": "/my-mappings",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "userUUID": "e72760a3-09a6-4c5d-ab60-993023a841c4",
+          "userName": "RauNbKbywY",
+          "issuer": "vV50VCkpx2",
+          "claimName": "ggSR12GCPz",
+          "claimValue": "hIPxzMKKxb"
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "/my-objects get",
+      "providerStates": [
+        {
+          "name": "/my-objects get"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/my-objects"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+          {
+            "valueOne": "hFs6ewHCHM",
+            "valueTwo": -0.73,
+            "valueThree": 84,
+            "valueFour": true,
+            "valueFive": {
+              "subValueOne": "B2ojWg8QZe",
+              "subValueTwo": 92
+            }
+          },
+          {
+            "valueOne": "agEWxVYWOt",
+            "valueTwo": -18.63,
+            "valueThree": 26,
+            "valueFour": true,
+            "valueFive": {
+              "subValueOne": "LLVFbV5avV",
+              "subValueTwo": 59
+            }
+          },
+          {
+            "valueOne": "UIKd8AOkYJ",
+            "valueTwo": -88.36,
+            "valueThree": 39,
+            "valueFour": true,
+            "valueFive": {
+              "subValueOne": "Ta5ISs3xPx",
+              "subValueTwo": 73
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "/my-objects post",
+      "providerStates": [
+        {
+          "name": "/my-objects post"
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "path": "/my-objects",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "valueOne": "hFs6ewHCHM",
+          "valueTwo": -0.73,
+          "valueThree": 84,
+          "valueFour": true,
+          "valueFive": {
+            "subValueOne": "B2ojWg8QZe",
+            "subValueTwo": 92
+          }
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "/my-objects delete",
+      "providerStates": [
+        {
+          "name": "/my-objects delete"
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "path": "/my-objects",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "valueOne": "hFs6ewHCHM",
+          "valueTwo": -0.73,
+          "valueThree": 84,
+          "valueFour": true,
+          "valueFive": {
+            "subValueOne": "B2ojWg8QZe",
+            "subValueTwo": 92
+          }
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "/important-things get",
+      "providerStates": [
+        {
+          "name": "/important-things get"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/important-things"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "description": "/important-things post",
+      "providerStates": [
+        {
+          "name": "/important-things post"
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "path": "/important-things",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "/important-things delete",
+      "providerStates": [
+        {
+          "name": "/important-things delete"
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "path": "/important-things",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "id": 100,
+          "myObject": {
+            "userUUID": "e72760a3-09a6-4c5d-ab60-993023a841c4",
+            "userName": "RauNbKbywY",
+            "issuer": "vV50VCkpx2",
+            "claimName": "ggSR12GCPz",
+            "claimValue": "hIPxzMKKxb"
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

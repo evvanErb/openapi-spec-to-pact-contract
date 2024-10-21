@@ -1,0 +1,26 @@
+components:
+  schemas:
+    Mapping:
+      type: object
+      required:
+        - issuer
+        - claimName
+        - claimValue
+      properties:
+        userUUID:
+          description: UUID for Mapping
+          type: string
+          format: uuid
+          example: 37f038e2-22ec-4e5b-93f4-f065bea65542
+        userName:
+          type: string
+          example: testUser
+        issuer:
+          type: string
+          example: http://myissuer.com:8080
+        claimName:
+          type: string
+          example: subject
+        claimValue:
+          type: string
+          example: xyz

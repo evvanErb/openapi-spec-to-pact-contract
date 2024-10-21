@@ -1,0 +1,215 @@
+openapi: 3.0.3
+info:
+  title: Example OpenAPI Spec
+  description: Example OpenAPI Spec for Testing
+  version: 1.0.0
+  contact:
+    name: Evvan Erb
+
+servers:
+  - url: '{baseUrl}/my-package/{version}'
+    variables:
+      baseUrl:
+        default: 'http://localhost:8080'
+      version:
+        default: v1
+
+paths:
+  /my-mappings:
+    get:
+      summary: Get mappings
+      description: Gets all mappings
+      operationId: getMappings
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './exampleOASComponents.yaml#/components/schemas/Mapping'
+      tags:
+        - mappings
+
+    post:
+      tags:
+        - mappings
+      summary: Create a mapping
+      description: Create a mapping
+      operationId: createMapping
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './exampleOASComponents.yaml#/components/schemas/Mapping'
+      responses:
+        '201':
+          description: Created
+
+    delete:
+      tags:
+        - mappings
+      summary: Delete a mapping
+      description: Delete a mapping
+      operationId: deleteMapping
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './exampleOASComponents.yaml#/components/schemas/Mapping'
+      responses:
+        '200':
+          description: Deleted
+
+  /my-objects:
+    get:
+      summary: Get all objects
+      description: Gets all objects
+      operationId: getObjects
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Object'
+      tags:
+        - objects
+
+    post:
+      tags:
+        - objects
+      summary: Create an object
+      description: Create an object
+      operationId: createObject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Object'
+      responses:
+        '201':
+          description: Created
+
+    delete:
+      tags:
+        - objects
+      summary: Delete an object
+      description: Delete an object
+      operationId: deleteObject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Object'
+      responses:
+        '200':
+          description: Deleted
+
+  /important-things:
+    get:
+      summary: Get important things
+      description: Gets all important things
+      operationId: getImportantThings
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                example: myString
+      tags:
+        - importantThings
+
+    post:
+      summary: Create an important thing
+      description: Create important thing
+      operationId: createImportantThing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                type: number
+                example: 1.2
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    required: true
+                  myObject:
+                    $ref: './exampleOASComponents.yaml#/components/schemas/Mapping'
+      tags:
+        - importantThings
+
+    delete:
+      tags:
+        - importantThings
+      summary: Delete an important thing
+      description: Delete an important thing
+      operationId: deleteImportantThing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: number
+              example: 1.2
+      responses:
+        '200':
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    required: true
+                  myObject:
+                    $ref: './exampleOASComponents.yaml#/components/schemas/Mapping'
+
+components:
+  schemas:
+    Object:
+      type: object
+      required:
+        - valueOne
+      properties:
+        valueOne:
+          description: Value One
+          type: string
+          example: myValue
+        valueTwo:
+          type: number
+          example: 1.2
+        valueThree:
+          type: integer
+          example: 3
+        valueFour:
+          type: boolean
+          example: true
+        valueFive:
+          type: object
+          properties:
+            subValueOne:
+              description: Value One
+              type: string
+              example: myValue
+            subValueTwo:
+              type: integer
+              example: 2
