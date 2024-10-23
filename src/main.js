@@ -17,7 +17,7 @@ function generateBody(schema) {
     }
     // For other types
     return generateExampleArray(schema['items']['type']);
-  } else if (schema['type'] == 'object') {
+  } else if (schema['type'] == 'object' && schema['properties'] != null) {
     // If it is an object return first example object
     return exampleObjects[Object.keys(schema['properties']).join('')][0];
   }
@@ -188,7 +188,7 @@ function generateExamples(schema) {
     return schema;
   }
   
-  if (schema['type'] != null && schema['type'] === 'object') {
+  if (schema['type'] != null && schema['type'] === 'object' && schema['properties'] != null) {
     let objectName = '';
     for (const propertyName of Object.keys(schema['properties'])) {
       objectName += propertyName;
