@@ -1,30 +1,75 @@
 const yaml = require('js-yaml');
 const fs   = require('fs');
+const path_lib = require('path');
 
-let savedRefs = {};
-let exampleObjects = {};
-let oasDirectory = "";
-let inputOasFilePath = "";
+/* Deal with generating pact interactions */
 
-function generateRandomString(length) {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    result += characters[randomIndex];
+function generateBody(schema) {
+  if (schema['type'] == 'array') {
+    // If it is an array of objects get all 3 example objects
+    if (schema['items']['type'] == 'object') {
+      let objectName = Object.keys(schema['items']['properties']).join('');
+      return [
+        exampleObjects[objectName][0],
+        exampleObjects[objectName][1],
+        exampleObjects[objectName][2],
+      ]
+    }
+    // For other types
+    return generateExampleArray(schema['items']['type']);
+  } else if (schema['type'] == 'object') {
+    // If it is an object return first example object
+    return exampleObjects[Object.keys(schema['properties']).join('')][0];
+  }
+  // Return singular example for non arrays or objects
+  return generateExampleItem(schema['type']);
+}
+
+function generatePactInteraction(openApiSpec, path, requestMethod) {
+  // Init the current pact interaction
+  let pactInteraction = {};
+  pactInteraction['description'] = path + " " + requestMethod;
+  pactInteraction['providerStates'] = [];
+  let providerState = {};
+  providerState['name'] = path + " " + requestMethod;
+  pactInteraction['providerStates'].push(providerState);
+  // Add request info
+  pactInteraction['request'] = {};
+  pactInteraction['request']['method'] = requestMethod.toUpperCase();
+  pactInteraction['request']['path'] = path;
+
+  // Get successful request and response bodies for each request method
+  let requestBody = null;
+  let responseBody = null;
+  if (openApiSpec.paths[path][requestMethod].requestBody != null) {
+    requestBody = openApiSpec.paths[path][requestMethod].requestBody.content['application/json'].schema;
+  }
+  if (openApiSpec.paths[path][requestMethod].responses['200'] != null && openApiSpec.paths[path][requestMethod].responses['200'].content != null) {
+    responseBody = openApiSpec.paths[path][requestMethod].responses['200'].content['application/json'].schema;
   }
 
-  return result;
+  // Add Request Body
+  if (requestBody != null) {
+    pactInteraction['request']['headers'] = {};
+    pactInteraction['request']['headers']['Content-Type'] = 'application/json';
+    pactInteraction['request']['body'] = generateBody(requestBody);
+  }
+
+  // Add Response Body
+  pactInteraction['response'] = {};
+  pactInteraction['response']['status'] = 200;
+  if (responseBody != null) {
+    pactInteraction['response']['headers'] = {};
+    pactInteraction['response']['headers']['Content-Type'] = 'application/json';
+    pactInteraction['response']['body'] = generateBody(responseBody);
+  }
+
+  return pactInteraction;
 }
 
-function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8); 
-    return v.toString(16);
-  });
-}
+/* Deal with generating example objects */
+
+let exampleObjects = {};
 
 function generateInsertExampleSql() {
   // TODO deal with sub objects
@@ -49,25 +94,24 @@ function generateInsertExampleSql() {
   return sql;
 }
 
-function generateBody(schema) {
-  if (schema['type'] == 'array') {
-    // If it is an array of objects get all 3 example objects
-    if (schema['items']['type'] == 'object') {
-      let objectName = Object.keys(schema['items']['properties']).join('');
-      return [
-        exampleObjects[objectName][0],
-        exampleObjects[objectName][1],
-        exampleObjects[objectName][2],
-      ]
-    }
-    // For other types
-    return generateExampleArray(schema['items']['type']);
-  } else if (schema['type'] == 'object') {
-    // If it is an object return first example object
-    return exampleObjects[Object.keys(schema['properties']).join('')][0];
+function generateRandomString(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters[randomIndex];
   }
-  // Return singular example for non arrays or objects
-  return generateExampleItem(schema['type']);
+
+  return result;
+}
+
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8); 
+    return v.toString(16);
+  });
 }
 
 function generateExampleItem(type) {
@@ -121,7 +165,7 @@ function generateExampleObjects(objectName, schema) {
       exampleTwo[propertyName] = generateExampleArray(currentProperty['items']['type']);
       exampleThree[propertyName] = generateExampleArray(currentProperty['items']['type']);
     } else if (type == 'object') {
-      // Due to the recursion strucutre in resolveReferences, sub-objects should already have examples generated
+      // Due to the recursion strucutre in generateExamples, sub-objects should already have examples generated
       const subObjectName = Object.keys(currentProperty['properties']).join('');
       exampleOne[propertyName] = exampleObjects[subObjectName][0];
       exampleTwo[propertyName] = exampleObjects[subObjectName][1];
@@ -139,129 +183,122 @@ function generateExampleObjects(objectName, schema) {
   return examples;
 }
 
-function fetchReferences(ref) {
-  // If already parsed return saved copy
-  if (savedRefs.hasOwnProperty(ref)) {
-    return savedRefs[ref];
+function generateExamples(schema) {
+  if (schema == null || typeof schema !== 'object') {
+    return schema;
   }
+  
+  if (schema['type'] != null && schema['type'] === 'object') {
+    let objectName = '';
+    for (const propertyName of Object.keys(schema['properties'])) {
+      objectName += propertyName;
+      // Recursively generate all sub objects first
+      generateExamples(schema['properties'][propertyName]);
+    }
+    // Generate 3 examples for this Object type
+    generateExampleObjects(objectName, schema);
+  } else {
+    // Recursively generate for nested objects
+    for (const key of Object.keys(schema)) {
+      generateExamples(schema[key]);
+    }
+  }
+}
 
-  // If the target is coming from a different yaml file
+/* Deal with fethcing and resolving references */
+
+let fetchedReferences = {};
+let inputOasFilePath = "";
+
+function fetchReferences(ref, absoluteCurrentFilePath) {
+
+  // Load target openapi spec
+  let absoluteNextFilePath = absoluteCurrentFilePath;
+
+  // If the target is coming from a different yaml file Otherwise load from local file
   if (ref.includes('.yaml') || ref.includes('.yml')) {
-    const path = ref.split('#')[0];
-    const componentName = ref.split('/').at(-1);
-    const relativePath = oasDirectory + '/' + path.substring(path.lastIndexOf('/') + 1);
-    const schema = yaml.load(fs.readFileSync(relativePath, 'utf8')).components.schemas[componentName];
-    let resolvedSchema = resolveReferences(schema);
-    resolvedSchema['name'] = ref;
-    savedRefs[ref] = resolvedSchema;
-    return resolvedSchema;
+    const relativeTargetPath = ref.split('#/')[0];
+
+    const absoluteCurrentDirPath = absoluteCurrentFilePath.substring(0, absoluteCurrentFilePath.lastIndexOf('/')) + '/';
+    absoluteNextFilePath = path_lib.resolve(absoluteCurrentDirPath, relativeTargetPath);
+  }
+  
+  let openApiSpec = yaml.load(fs.readFileSync(absoluteNextFilePath, 'utf8'));
+
+  // Get target component to resolve
+  const targetObjectStructure = ref.split('#/')[1];
+  const targetObjectStructureParts = targetObjectStructure.split('/');
+
+  let targetComponentSchema = openApiSpec;
+  for (const part of targetObjectStructureParts) {
+    targetComponentSchema = targetComponentSchema[part];
   }
 
-  // Otherwise load from local file
-  const openApiSpec = yaml.load(fs.readFileSync(inputOasFilePath, 'utf8'));
-  const componentName = ref.split('/').at(-1);
-  let resolvedSchema = resolveReferences(openApiSpec.components.schemas[componentName]);
-  resolvedSchema['name'] = '#/components/schemas/' + componentName;
-  savedRefs['#/components/schemas/' + componentName] = resolvedSchema;
+  const resolvedSchema = resolveReferences(targetComponentSchema, absoluteNextFilePath);
+  fetchedReferences[ref] = resolvedSchema;
   return resolvedSchema;
 }
 
-function resolveReferences(schema) {
+function resolveReferences(schema, absoluteCurrentFilePath) {
   if (schema == null) {
     return null;
   }
 
-  // Parse all referential schemas
-  if (Object.keys(schema)[0] == '$ref') {
-    return fetchReferences(schema['$ref']);
+  if (typeof schema !== 'object') {
+    return schema;
   }
 
-  // Iterate over objects as they may have refs
-  if (schema['type'] == 'object') {
-    let objectName = '';
-    for (propertyName in schema['properties']) {
-      objectName += propertyName;
-      schema['properties'][propertyName] = resolveReferences(schema['properties'][propertyName]);
+  for (const key of Object.keys(schema)) {
+    if (key === '$ref') {
+      // Fetch the referenced schema and store it to avoid re-fetching, return resolved schema
+      fetchReferences(schema['$ref'], absoluteCurrentFilePath);
+      return fetchedReferences[schema['$ref']];
+    } else {
+      // Recursively resolve for nested objects
+      schema[key] = resolveReferences(schema[key], absoluteCurrentFilePath);
     }
-    generateExampleObjects(objectName, schema);
-  }
-
-  // Check array items as they may have refs
-  if (schema['type'] == 'array') {
-    schema['items'] = resolveReferences(schema['items']);
   }
 
   return schema;
 }
 
-function generatePactInteraction(openApiSpec, path, requestMethod) {
-  // Init the current pact interaction
-  let pactInteraction = {};
-  pactInteraction['description'] = path + " " + requestMethod;
-  pactInteraction['providerStates'] = [];
-  let providerState = {};
-  providerState['name'] = path + " " + requestMethod;
-  pactInteraction['providerStates'].push(providerState);
-  // Add request info
-  pactInteraction['request'] = {};
-  pactInteraction['request']['method'] = requestMethod.toUpperCase();
-  pactInteraction['request']['path'] = path;
-
-  // Get successful request and response bodies for each request method
-  let requestBody = null;
-  let responseBody = null;
-  if (openApiSpec.paths[path][requestMethod].requestBody != null) {
-    requestBody = openApiSpec.paths[path][requestMethod].requestBody.content['application/json'].schema;
-  }
-  if (openApiSpec.paths[path][requestMethod].responses['200'] != null && openApiSpec.paths[path][requestMethod].responses['200'].content != null) {
-    responseBody = openApiSpec.paths[path][requestMethod].responses['200'].content['application/json'].schema;
-  }
-  const parsedRequestBodySchema = resolveReferences(requestBody);
-  const parsedResponseBodySchema = resolveReferences(responseBody);
-
-  // Add Request Body
-  if (parsedRequestBodySchema != null) {
-    pactInteraction['request']['headers'] = {};
-    pactInteraction['request']['headers']['Content-Type'] = 'application/json';
-    pactInteraction['request']['body'] = generateBody(parsedRequestBodySchema);
-  }
-
-  // Add Response Body
-  pactInteraction['response'] = {};
-  pactInteraction['response']['status'] = 200;
-  if (parsedResponseBodySchema != null) {
-    pactInteraction['response']['headers'] = {};
-    pactInteraction['response']['headers']['Content-Type'] = 'application/json';
-    pactInteraction['response']['body'] = generateBody(parsedResponseBodySchema);
-  }
-
-  return pactInteraction;
-}
+/*
+1. Resolve all references at all levels in the schema
+2. Iterate through schema and for all objects generate examples
+3. Init pact contract
+3. Build pact interactions for each path 
+4. Output pact contract, example objects, example objects as insert sql
+*/
 
 function main() {
   // Load openapi spec yaml
   inputOasFilePath = process.argv.slice(2)[0];
+  const absoluteFilePath = (path_lib.isAbsolute(inputOasFilePath) ? inputOasFilePath : path_lib.resolve(__dirname, inputOasFilePath)).replace(/\\/g, '/');
   const openApiSpec = yaml.load(fs.readFileSync(inputOasFilePath, 'utf8'));
-  oasDirectory = inputOasFilePath.substring(0, inputOasFilePath.lastIndexOf('/'));
+  const unifiedOpenApiSpec = resolveReferences(openApiSpec, absoluteFilePath);
+  fs.writeFileSync('./example_outputs/unifiedOAS.yaml', JSON.stringify(unifiedOpenApiSpec, null, 2), 'utf8');
+
+  // Generate example objects
+  generateExamples(unifiedOpenApiSpec);
 
   // Init pact contract
   let pactContract = {};
   pactContract['consumer'] = {};
-  pactContract['consumer']['name'] = openApiSpec.info.title.replace(/\s+/g, '') + 'Consumer';
+  pactContract['consumer']['name'] = unifiedOpenApiSpec.info.title.replace(/\s+/g, '') + 'Consumer';
   pactContract['provider'] = {};
-  pactContract['provider']['name'] = openApiSpec.info.title.replace(/\s+/g, '') + 'Provider';
+  pactContract['provider']['name'] = unifiedOpenApiSpec.info.title.replace(/\s+/g, '') + 'Provider';
   pactContract['interactions'] = [];
   pactContract['metadata'] = {};
   pactContract['metadata']['pactSpecification'] = {};
   pactContract['metadata']['pactSpecification']['version'] = '2.0.0';
 
   // Get all Paths
-  for (path in openApiSpec.paths) {
+  for (path in unifiedOpenApiSpec.paths) {
 
     // Get all request methods for each path
-    for (requestMethod in openApiSpec.paths[path]) {
+    for (requestMethod in unifiedOpenApiSpec.paths[path]) {
       // Add Interaction
-      const pactInteraction = generatePactInteraction(openApiSpec, path, requestMethod);
+      const pactInteraction = generatePactInteraction(unifiedOpenApiSpec, path, requestMethod);
       pactContract['interactions'].push(pactInteraction);
     }
   }
