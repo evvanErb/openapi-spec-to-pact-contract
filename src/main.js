@@ -240,11 +240,7 @@ function fetchReferences(ref, absoluteCurrentFilePath) {
 }
 
 function resolveReferences(schema, absoluteCurrentFilePath) {
-  if (schema == null) {
-    return null;
-  }
-
-  if (typeof schema !== 'object') {
+  if (schema == null || typeof schema !== 'object') {
     return schema;
   }
 
