@@ -217,7 +217,10 @@ function fetchReferences(ref, absoluteCurrentFilePath) {
 
   // If the target is coming from a different yaml file Otherwise load from local file
   if (ref.includes('.yaml') || ref.includes('.yml')) {
-    const relativeTargetPath = ref.split('#/')[0];
+    let relativeTargetPath = ref;
+    if (relativeTargetPath.includes('#/')) {
+      relativeTargetPath = relativeTargetPath.split('#/')[0];
+    }
 
     const absoluteCurrentDirPath = absoluteCurrentFilePath.substring(0, absoluteCurrentFilePath.lastIndexOf('/')) + '/';
     absoluteNextFilePath = path_lib.resolve(absoluteCurrentDirPath, relativeTargetPath);
@@ -226,8 +229,11 @@ function fetchReferences(ref, absoluteCurrentFilePath) {
   let openApiSpec = yaml.load(fs.readFileSync(absoluteNextFilePath, 'utf8'));
 
   // Get target component to resolve
-  const targetObjectStructure = ref.split('#/')[1];
-  const targetObjectStructureParts = targetObjectStructure.split('/');
+  let targetObjectStructureParts = [];
+  if (ref.includes('#/')) {
+    const targetObjectStructure = ref.split('#/')[1];
+    targetObjectStructureParts = targetObjectStructure.split('/');
+  }
 
   let targetComponentSchema = openApiSpec;
   for (const part of targetObjectStructureParts) {
