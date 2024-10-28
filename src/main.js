@@ -215,25 +215,23 @@ function fetchReferences(ref, absoluteCurrentFilePath) {
   // Load target openapi spec
   let absoluteNextFilePath = absoluteCurrentFilePath;
 
+  let relativeTargetPath = ref;
+  let targetObjectStructureParts = [];
+  if (relativeTargetPath.includes('#/')) {
+    // Get path to target file
+    relativeTargetPath = relativeTargetPath.split('#/')[0];
+    // Get target components to resolve
+    const targetObjectStructure = ref.split('#/')[1];
+    targetObjectStructureParts = targetObjectStructure.split('/');
+  }
+
   // If the target is coming from a different yaml file Otherwise load from local file
   if (ref.includes('.yaml') || ref.includes('.yml')) {
-    let relativeTargetPath = ref;
-    if (relativeTargetPath.includes('#/')) {
-      relativeTargetPath = relativeTargetPath.split('#/')[0];
-    }
-
     const absoluteCurrentDirPath = absoluteCurrentFilePath.substring(0, absoluteCurrentFilePath.lastIndexOf('/')) + '/';
     absoluteNextFilePath = path_lib.resolve(absoluteCurrentDirPath, relativeTargetPath);
   }
   
   let openApiSpec = yaml.load(fs.readFileSync(absoluteNextFilePath, 'utf8'));
-
-  // Get target component to resolve
-  let targetObjectStructureParts = [];
-  if (ref.includes('#/')) {
-    const targetObjectStructure = ref.split('#/')[1];
-    targetObjectStructureParts = targetObjectStructure.split('/');
-  }
 
   let targetComponentSchema = openApiSpec;
   for (const part of targetObjectStructureParts) {
